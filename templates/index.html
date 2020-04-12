@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>이미지</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+
+</head>
+<body>
+    <button onclick="call_list()">이미지 불러오기</button>
+    <script>
+        function call_list(){
+        console.log("function")
+        axios.post('http://localhost:5000/imagelist',{list : 1})
+        .then(response=> {
+            image_list = response.data
+            for(i=0;i<image_list.length;i++){
+            document.write("<img src=\"static/images/"+image_list[i]+"\" width=\"500\" height=\"500\" >")
+            }
+        })
+        .catch(error=> {
+            console.log(error)
+        });}
+    </script>
+</body>
+</html>

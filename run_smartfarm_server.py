@@ -1,12 +1,18 @@
+from flask import render_template, jsonify
 from keras.applications import ResNet50
 from keras.preprocessing.image import img_to_array
 from keras.applications import imagenet_utils
 from PIL import Image
 import numpy as np
 import flask
+from flask_cors import CORS
+
 import io
+import os
+import json
 
 app = flask.Flask(__name__)
+CORS(app)
 model = None
 
 def load_model():
@@ -26,6 +32,10 @@ def prepare_image(image, target):
 
     # 처리된 이미지를 반환합니다.
     return image
+
+@app.route('/')
+def introduce():
+    return render_template('index.html')
 
 @app.route("/predict", methods=["POST"])
 def predict():
@@ -58,11 +68,21 @@ def predict():
             data["success"] = True
 
     # JSON 형식으로 데이터 딕셔너리를 반환합니다.
-    return flask.jsonify(data)
+    return data
+
+@app.route("/imagelist", methods=["POST"])
+def imagelist():
+    path = "static/images"
+    list = os.listdir(path)
+    jsonlist = json.dumps(list)
+    return jsonlist
+
+
+
 
 # 실행에서 메인 쓰레드인 경우, 먼저 모델을 불러온 뒤 서버를 시작합니다.
 if __name__ == "__main__":
     print(("* Loading Keras model and Flask starting server..."
         "please wait until server has fully started"))
     load_model()
-    app.run(threaded=False)
+    app.run(threaded=True)
